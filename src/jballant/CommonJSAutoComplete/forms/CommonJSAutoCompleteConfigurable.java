@@ -11,8 +11,14 @@ import javax.swing.*;
  * Created by james on 7/20/14.
  */
 public class CommonJSAutoCompleteConfigurable implements Configurable {
-    private JTextField textField1;
+    private JTextField mainJSRootDirTextField;
     private JPanel myPanel;
+    private JLabel mainJSRootDirLabel;
+    private JTextField deepIncludeNodeModulesField;
+    private JCheckBox useRelativePathsForCheckBox;
+    private JLabel nodeModulesDirLabel;
+    private JTextField pathToNodeModulesField;
+    private JLabel deepIncludeNodeModulesLabel;
 
     @Nls
     @Override
