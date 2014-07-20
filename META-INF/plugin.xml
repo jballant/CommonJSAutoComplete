@@ -1,8 +1,8 @@
 <idea-plugin version="2">
-  <id>com.jballant.CommonJSAutoComplete</id>
+  <id>com.yourcompany.unique.plugin.id</id>
   <name>Plugin display name here</name>
-  <version>0.0.0</version>
-  <vendor email="james@1stdibs.com" url="http://www.1stdibs.com">1stdibs</vendor>
+  <version>1.0</version>
+  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
       Enter short description for your plugin here.<br>
@@ -18,11 +18,15 @@
   <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
   <idea-version since-build="131"/>
 
-  <depends>com.intellij.modules.lang</depends>
-  <depends>JavaScript</depends>
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <depends>com.intellij.modules.platform</depends>
+    <depends>JavaScript</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-      <completion.contributor order="FIRST" language="any" implementationClass="JSRequireCompletionContributer" />
+    <!-- Add your extensions here -->
+      <projectConfigurable id="commonJsAutoComplete" instance="forms.CommonJSAutoCompleteConfigurable" displayName="Jamie's sweet extension"></projectConfigurable>
+      <completion.contributor implementationClass="JSRequireCompletionContributer" language="any" order="FIRST" />
   </extensions>
 
   <application-components>
