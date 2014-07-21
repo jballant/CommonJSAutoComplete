@@ -57,7 +57,24 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
 
     @Override
     public boolean isModified() {
-        return true;
+        String mainJSRootDirString = mainJSRootDirTextField.getText().trim();
+        String nodeModulesDirString = nodeModulesDirField.getText().trim();
+        String deepIncludeNodeModulesString = deepIncludeNodeModulesField.getText().trim();
+        boolean useRelativePathsForMainJsDir = useRelativePathsCheckBox.isSelected();
+
+        if (!myConfig.getMainJSDirString().equals(mainJSRootDirString)) {
+            return true;
+        }
+        if (!myConfig.getNodeModulesDirString().equals(nodeModulesDirString)) {
+            return true;
+        }
+        if (!myConfig.getDeepIncludeModulesDirString().equals(deepIncludeNodeModulesString)) {
+            return true;
+        }
+        if (myConfig.getUseRelativePathsForMain() != useRelativePathsForMainJsDir) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -77,10 +94,6 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
 
     @Override
     public void reset() {
-        myConfig.setUseRelativePathsForMain(false);
-        myConfig.setNodeModulesDirString("");
-        myConfig.setMainJSDirString("");
-        myConfig.setDeepIncludeModulesDirString("");
     }
 
     @Override
