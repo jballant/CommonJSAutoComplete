@@ -2,10 +2,10 @@
   <id>jballant.CommonJSAutoComplete</id>
   <name>CommonJS AutoComplete</name>
   <version>0.0.0</version>
-  <vendor email="james@1stdibs.com" url="http://www.1stdibs.com">James Ballantine - 1stdibs.com, Inc</vendor>
+  <vendor url="http://www.1stdibs.com">James Ballantine - 1stdibs.com, Inc</vendor>
 
   <description><![CDATA[
-      Provides AutoComplete for CommonJS require statements
+      Provides AutoComplete for CommonJS require statements. Please report any issues via Github.
     ]]></description>
 
 
