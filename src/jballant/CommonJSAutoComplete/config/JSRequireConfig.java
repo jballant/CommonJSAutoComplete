@@ -141,12 +141,12 @@ public class JSRequireConfig {
 
     public void setMainJSDirString(String value) {
         setPersistVal(MAIN_JS_DIR_KEY, value);
-        setNodeModulesDirWithString(value);
+        setMainJSDirWithString(value);
     }
 
     public void setNodeModulesDirString(String value) {
         setPersistVal(NODE_MODULES_DIR_KEY, value);
-        setMainJSDirWithString(value);
+        setNodeModulesDirWithString(value);
     }
 
     public void setDeepIncludeModulesDirString(String value) {

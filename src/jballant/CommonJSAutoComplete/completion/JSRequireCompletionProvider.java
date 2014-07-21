@@ -19,6 +19,7 @@ import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
+import org.apache.tools.ant.util.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import config.JSRequireConfig;
@@ -70,8 +71,9 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         String varName = jsVar.getName();
         PsiFile origFile = completionParameters.getOriginalFile();
 
-        // TODO: make boolean for using full paths that is set in a config
-        ArrayList<String> paths = findFilePathsForVarName(varName, origFile.getProject());
+        // Find all the corresponding require statement file paths
+        // given the var name
+        ArrayList<String> paths = findFilePathsForVarName(varName, origFile);
         for (String path : paths) {
             completionResultSet.addElement(buildLookupElementWithPath(path));
         }
@@ -101,9 +103,11 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
     }
 
     // TODO: use relativise with current file to create relative path
-    public static ArrayList<String> findFilePathsForVarName(String varName, Project project) {
+    public static ArrayList<String> findFilePathsForVarName(String varName, PsiFile currentPsiFile) {
 
+        Project project = currentPsiFile.getProject();
         JSRequireConfig config = JSRequireConfig.getInstanceForProject(project);
+        boolean shouldMakePathsRelative = config.getUseRelativePathsForMain();
 
         VirtualFile[] rootJSDirs = new VirtualFile[2];
         rootJSDirs[0] = config.getMainJSRootDir();
@@ -111,7 +115,6 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
         ArrayList<String> paths = new ArrayList<String>();
         ArrayList<VirtualFile> rootDirFiles;
-        String ext;
         String filePath;
         for (VirtualFile rootDir : rootJSDirs) {
 
@@ -121,16 +124,20 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
             rootDirFiles = new ArrayList<VirtualFile>();
 
+            // Populates rootDirFiles with VirtualFiles that match the varName
+            // searching throught the root directory
             findFilePathForNameHelper(rootDir, varName, rootDirFiles, config);
 
             for (VirtualFile file : rootDirFiles) {
                 if (file != null) {
-                    ext = file.getExtension();
-                    filePath = file.getPath();
-                    paths.add(filePath.substring(
-                            rootDir.getPath().length() + 1,
-                            (filePath.length() - (ext != null ? ext.length() + 1 : 0))
-                    ));
+                    if (!shouldMakePathsRelative || rootDir != config.getMainJSRootDir()) {
+                        filePath = getRequirePathFromRootDir(file, rootDir);
+                    } else {
+                        filePath = getRequirePathRelativeToCurrentFile(currentPsiFile.getVirtualFile(), file);
+                    }
+                    if (filePath != null) {
+                        paths.add(filePath);
+                    }
                 }
             }
         }
@@ -138,8 +145,32 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         return paths;
     }
 
+    private static String getRequirePathFromRootDir(VirtualFile file, VirtualFile rootDir) {
+        String ext = file.getExtension();
+        String filePath = file.getPath();
+        return filePath.substring(
+                rootDir.getPath().length() + 1,
+                (filePath.length() - (ext != null ? ext.length() + 1 : 0))
+        );
+    }
+
+    private static String getRequirePathRelativeToCurrentFile(VirtualFile currentFile, VirtualFile relativeFile) {
+        String ext = relativeFile.getExtension();
+        String filePath = relativizePaths(currentFile.getPath(), relativeFile.getPath());
+        if (filePath != null) {
+            return filePath.substring(0, filePath.length() - (ext != null ? ext.length() + 1 : 0));
+        }
+        return null;
+    }
+
     private static String relativizePaths(String aAbsolutePath, String bAbsolutePath) {
-        return new File(aAbsolutePath).toURI().relativize(new File(bAbsolutePath).toURI()).getPath();
+        String relPath;
+        try {
+             relPath = FileUtils.getRelativePath(new File(aAbsolutePath), new File(bAbsolutePath));
+        } catch (Exception e) {
+            return null;
+        }
+        return relPath;
     }
 
     private static void findFilePathForNameHelper(

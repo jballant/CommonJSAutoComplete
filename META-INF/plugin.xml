@@ -1,19 +1,13 @@
 <idea-plugin version="2">
-  <id>com.yourcompany.unique.plugin.id</id>
-  <name>Plugin display name here</name>
-  <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <id>jballant.CommonJSAutoComplete</id>
+  <name>CommonJS AutoComplete</name>
+  <version>0.0.0</version>
+  <vendor email="james@1stdibs.com" url="http://www.1stdibs.com">James Ballantine - 1stdibs.com, Inc</vendor>
 
   <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      Provides AutoComplete for CommonJS require statements
     ]]></description>
 
-  <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
-    ]]>
-  </change-notes>
 
   <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
   <idea-version since-build="131"/>
