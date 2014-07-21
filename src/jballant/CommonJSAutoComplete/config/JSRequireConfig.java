@@ -132,11 +132,11 @@ public class JSRequireConfig {
     }
 
     private void setPersistVal(String key, String value) {
-        PropertiesComponent.getInstance(myProject).setValue(key, value);
+        PropertiesComponent.getInstance(myProject).setValue(formatKey(key), value);
     }
 
     public String getPersistVal(String key) {
-        return PropertiesComponent.getInstance(myProject).getValue(key, "");
+        return PropertiesComponent.getInstance(myProject).getValue(formatKey(key), "");
     }
 
     public void setMainJSDirString(String value) {
@@ -172,6 +172,10 @@ public class JSRequireConfig {
 
     public boolean getUseRelativePathsForMain() {
         return getPersistVal(USE_RELATIVE_PATHS_FOR_MAIN_KEY).equals(TRUE_STRING);
+    }
+
+    private String formatKey(String key) {
+        return key . concat("-") . concat(myProject.getName());
     }
 
 }
