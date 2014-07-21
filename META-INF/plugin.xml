@@ -26,7 +26,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
       <projectConfigurable id="commonJsAutoComplete" instance="forms.CommonJSAutoCompleteConfigurable" displayName="CommonJS AutoComplete"></projectConfigurable>
-      <completion.contributor implementationClass="JSRequireCompletionContributer" language="any" order="FIRST" />
+      <completion.contributor implementationClass="completion.JSRequireCompletionContributer" language="any" order="FIRST" />
   </extensions>
 
   <application-components>

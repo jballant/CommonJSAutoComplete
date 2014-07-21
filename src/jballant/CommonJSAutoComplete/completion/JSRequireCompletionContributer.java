@@ -1,0 +1,40 @@
+package completion;
+
+import com.intellij.codeInsight.completion.*;
+import com.intellij.lang.javascript.JavascriptLanguage;
+import com.intellij.lang.javascript.psi.JSReferenceExpression;
+import com.intellij.patterns.PlatformPatterns;
+import com.intellij.patterns.PsiElementPattern;
+import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Created by james on 7/14/14.
+ */
+public class JSRequireCompletionContributer extends CompletionContributor {
+
+    public JSRequireCompletionContributer() {
+
+        super();
+
+        PsiElementPattern.Capture<PsiElement> pattern =
+                PlatformPatterns.psiElement()
+                    .withParent(PlatformPatterns.psiElement(JSReferenceExpression.class))
+                    .withLanguage(JavascriptLanguage.INSTANCE);
+
+        JSRequireCompletionProvider completionProvider = new JSRequireCompletionProvider();
+
+        extend(CompletionType.BASIC, pattern, completionProvider);
+    }
+
+    @Override
+    public void beforeCompletion(@NotNull CompletionInitializationContext context) {
+        super.beforeCompletion(context);
+    }
+
+    @Override
+    public void fillCompletionVariants(CompletionParameters parameters, CompletionResultSet result) {
+        super.fillCompletionVariants(parameters, result);
+    }
+
+}

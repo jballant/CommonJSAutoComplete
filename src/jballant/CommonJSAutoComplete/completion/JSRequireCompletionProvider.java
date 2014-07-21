@@ -1,3 +1,5 @@
+package completion;
+
 import com.intellij.codeInsight.completion.CompletionParameters;
 import com.intellij.codeInsight.completion.CompletionProvider;
 import com.intellij.codeInsight.completion.CompletionResultSet;
@@ -19,6 +21,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 
+import config.JSRequireConfig;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -52,6 +55,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
         PsiElement rawJsVar = origPsiElement.getParent().getParent();
         JSVariable jsVar;
+        // Make sure that the current element is a JS Variable
         if (isJSVar(rawJsVar)) {
             jsVar = (JSVariableImpl)rawJsVar;
         } else {
@@ -162,7 +166,8 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
                 }
 
                 String curFileName = file.getName();
-                String ext = file.getExtension();
+                String ext = file.getExtension(); // TODO: TEST APPROVED EXTENSIONS!
+                boolean hasAllowedExtension = config.hasAllowedExtension(ext);
                 ext = ext != null ? ".".concat(ext) : "";
                 // skip dir if current file or folder is hidden
                 if (curFileName.charAt(0) == DOT_CHAR) {
@@ -180,7 +185,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
                 }
                 // camelcase the current file name if it has dashes and
                 // then test to see if the varName + extension is the same
-                if (camelCaseString(curFileName).equals(fileNameWithoutExt.concat(ext))) {
+                if (hasAllowedExtension && camelCaseString(curFileName).equals(fileNameWithoutExt.concat(ext))) {
                     files.add(file);
                 }
                 // If we are withinOwnNodeModules and our deepIncludedNodeModules contains
