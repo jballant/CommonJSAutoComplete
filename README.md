@@ -18,7 +18,7 @@ For this plugin to work properly you will need to perform the following
 How to use it:
 --------------
 
-When this plugin is installed and configured, when you type a ```require``1 var statement to load a dependency through a CommonJS file, the variable name is used to autocomplete the rest of the ```require``` statement:
+When this plugin is installed and configured, when you type a ```require``` var statement to load a dependency through a CommonJS file, the variable name is used to autocomplete the rest of the ```require``` statement:
 
 ```javascript
 
