@@ -2,6 +2,7 @@ package config;
 
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.impl.ProjectImpl;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
@@ -175,7 +176,8 @@ public class JSRequireConfig {
     }
 
     private String formatKey(String key) {
-        return key . concat("-") . concat(myProject.getName());
+        ProjectImpl myProjectImpl = (ProjectImpl) myProject;
+        return key . concat("-") . concat(myProjectImpl.getDefaultName());
     }
 
 }
