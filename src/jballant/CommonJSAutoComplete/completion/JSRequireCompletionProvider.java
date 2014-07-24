@@ -10,8 +10,6 @@ import com.intellij.lang.javascript.JavascriptLanguage;
 import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.lang.javascript.psi.JSVarStatement;
 import com.intellij.lang.javascript.psi.JSVariable;
-import com.intellij.lang.javascript.psi.impl.JSReferenceExpressionImpl;
-import com.intellij.lang.javascript.psi.impl.JSVariableImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -181,7 +179,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
         final ArrayList<VirtualFile> deepIncludedNodeModules = config.getDeepIncludedNodeModules();
         final VirtualFile ownNodeModulesDir = config.getNodeModulesRootDir();
-        final boolean withinOwnNodeModules = ownNodeModulesDir == searchDir;
+        final boolean withinOwnNodeModules = ownNodeModulesDir.equals(searchDir);
 
         VfsUtilCore.visitChildrenRecursively(searchDir, new VirtualFileVisitor() {
             private boolean isDeepIncludedNodeModule = false;
@@ -191,7 +189,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
                 // Return true (that we want to search this directory)
                 // if the current file is the search directory
-                if (file == searchDir) {
+                if (file.equals(searchDir)) {
                     return true;
                 }
 
@@ -229,7 +227,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
                 return file.isDirectory() && file.getName().equals(JSRequireConfig.NODE_MODULES_DIR_NAME);
             }
             private boolean isOwnNodeModules(VirtualFile file) {
-                return file == ownNodeModulesDir;
+                return file.equals(ownNodeModulesDir);
             }
         });
 
