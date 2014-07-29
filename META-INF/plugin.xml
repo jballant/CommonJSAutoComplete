@@ -1,13 +1,22 @@
 <idea-plugin version="2">
   <id>jballant.CommonJSAutoComplete</id>
   <name>CommonJS AutoComplete</name>
-  <version>0.0.0</version>
+  <version>0.0.1</version>
   <vendor url="http://www.1stdibs.com">James Ballantine - 1stdibs.com, Inc</vendor>
 
   <description><![CDATA[
-      Provides AutoComplete for CommonJS require statements. Please report any issues via Github.
+      Provides AutoComplete for CommonJS require statements. <a href="https://github.com/jballant/CommonJSAutoComplete">Visit Github repo</a> for more documentation and to report issues.
     ]]></description>
 
+    <change-notes><![CDATA[
+        <p><strong>0.0.1</strong></p>
+        <ul>
+            <li>Fix bug with relative paths calculation</li>
+            <li>Stopped adding semicolons to completion text, so comma separated variables
+            can be completed properly. Note: use smart statement completion to complete with semicolon</li>
+            <li>Fix bug producing error messages when typing local vars</li>
+        </ul>
+    ]]></change-notes>
 
   <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
   <idea-version since-build="131"/>

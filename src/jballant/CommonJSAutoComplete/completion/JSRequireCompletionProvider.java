@@ -10,8 +10,6 @@ import com.intellij.lang.javascript.JavascriptLanguage;
 import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.lang.javascript.psi.JSVarStatement;
 import com.intellij.lang.javascript.psi.JSVariable;
-import com.intellij.lang.javascript.psi.impl.JSReferenceExpressionImpl;
-import com.intellij.lang.javascript.psi.impl.JSVariableImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -31,7 +29,6 @@ import java.util.ArrayList;
  */
 public class JSRequireCompletionProvider extends CompletionProvider<CompletionParameters> {
 
-    static final String JS_REF_CLASS = JSReferenceExpressionImpl.class.getName();
     static final String REQUIRE_FUNC_NAME = "require";
 
     @Override
@@ -58,7 +55,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         JSVariable jsVar;
         // Make sure that the current element is a JS Variable
         if (isJSVar(rawJsVar)) {
-            jsVar = (JSVariableImpl)rawJsVar;
+            jsVar = (JSVariable)rawJsVar;
         } else {
             return;
         }
@@ -82,10 +79,11 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
     public static LookupElement buildLookupElementWithPath(String path) {
         String completionString = "require('".concat(path).concat("')");
         return LookupElementBuilder
-                .create(completionString.concat(";"))
+                .create(completionString)
                 .withBoldness(true)
                 .withPresentableText(completionString)
-                .withTailText(";")
+                .withCaseSensitivity(true)
+                .withTailText(";", true)
                 .withAutoCompletionPolicy(AutoCompletionPolicy.GIVE_CHANCE_TO_OVERWRITE);
     }
 
@@ -102,7 +100,6 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         return element instanceof JSVariable;
     }
 
-    // TODO: use relativise with current file to create relative path
     public static ArrayList<String> findFilePathsForVarName(String varName, PsiFile currentPsiFile) {
 
         Project project = currentPsiFile.getProject();
@@ -130,7 +127,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
             for (VirtualFile file : rootDirFiles) {
                 if (file != null) {
-                    if (!shouldMakePathsRelative || rootDir != config.getMainJSRootDir()) {
+                    if (!shouldMakePathsRelative || !config.getMainJSRootDir().equals(rootDir)) {
                         filePath = getRequirePathFromRootDir(file, rootDir);
                     } else {
                         filePath = getRequirePathRelativeToCurrentFile(currentPsiFile.getVirtualFile(), file);
@@ -156,7 +153,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
     private static String getRequirePathRelativeToCurrentFile(VirtualFile currentFile, VirtualFile relativeFile) {
         String ext = relativeFile.getExtension();
-        String filePath = relativizePaths(currentFile.getPath(), relativeFile.getPath());
+        String filePath = relativizePaths(currentFile.getParent().getPath(), relativeFile.getPath());
         if (filePath != null) {
             return filePath.substring(0, filePath.length() - (ext != null ? ext.length() + 1 : 0));
         }
@@ -182,7 +179,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
         final ArrayList<VirtualFile> deepIncludedNodeModules = config.getDeepIncludedNodeModules();
         final VirtualFile ownNodeModulesDir = config.getNodeModulesRootDir();
-        final boolean withinOwnNodeModules = ownNodeModulesDir == searchDir;
+        final boolean withinOwnNodeModules = ownNodeModulesDir.equals(searchDir);
 
         VfsUtilCore.visitChildrenRecursively(searchDir, new VirtualFileVisitor() {
             private boolean isDeepIncludedNodeModule = false;
@@ -192,12 +189,12 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
                 // Return true (that we want to search this directory)
                 // if the current file is the search directory
-                if (file == searchDir) {
+                if (file.equals(searchDir)) {
                     return true;
                 }
 
                 String curFileName = file.getName();
-                String ext = file.getExtension(); // TODO: TEST APPROVED EXTENSIONS!
+                String ext = file.getExtension();
                 boolean hasAllowedExtension = config.hasAllowedExtension(ext);
                 ext = ext != null ? ".".concat(ext) : "";
                 // skip dir if current file or folder is hidden
@@ -230,7 +227,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
                 return file.isDirectory() && file.getName().equals(JSRequireConfig.NODE_MODULES_DIR_NAME);
             }
             private boolean isOwnNodeModules(VirtualFile file) {
-                return file == ownNodeModulesDir;
+                return file.equals(ownNodeModulesDir);
             }
         });
 
