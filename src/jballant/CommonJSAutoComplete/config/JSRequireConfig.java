@@ -90,6 +90,9 @@ public class JSRequireConfig {
     }
 
     private void setNodeModulesDirWithString (@NotNull String relativePath) {
+        if (relativePath.trim().equals("")) {
+            relativePath = NODE_MODULES_DIR_NAME;
+        }
         nodeModulesRootDir = myProject.getBaseDir().findFileByRelativePath(relativePath);
     }
 
@@ -103,6 +106,10 @@ public class JSRequireConfig {
 
     private void determineDeepIncludedNodeModules(@Nullable String includedModulesString) {
 
+        // Make included included node_modules at least an empty
+        // array list, even if the string value is null. If the
+        // string value is not null, then it will be populated
+        // with virtual files
         includedNodeModules = new ArrayList<VirtualFile>();
 
         if (includedModulesString == null) {
@@ -122,7 +129,7 @@ public class JSRequireConfig {
         }
     }
 
-    public boolean hasAllowedExtension(String ext) {
+    public boolean hasAllowedExtension(@Nullable String ext) {
         // Null could mean it is a directory, which we allow because it could be a node_module
         if (ext == null) {
             return true;
@@ -140,7 +147,7 @@ public class JSRequireConfig {
     }
 
     private void setPersistVal(@NotNull String key, @NotNull String value) {
-        PropertiesComponent.getInstance(myProject).setValue(formatKey(key), value);
+        PropertiesComponent.getInstance(myProject).setValue(formatKey(key), value.trim());
     }
 
     public @NotNull String getPersistVal(@NotNull String key) {
