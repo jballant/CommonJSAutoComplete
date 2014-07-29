@@ -21,6 +21,8 @@ import org.apache.tools.ant.util.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import config.JSRequireConfig;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -30,6 +32,9 @@ import java.util.ArrayList;
 public class JSRequireCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     static final String REQUIRE_FUNC_NAME = "require";
+    static final String DASH_STRING = "-";
+    static final String SEMICOLON_STR = ";";
+    static final char REQUIRE_PATH_SEPARATOR = '/';
 
     @Override
     protected void addCompletions(
@@ -66,49 +71,56 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         }
 
         String varName = jsVar.getName();
+        if (varName == null) {
+            return;
+        }
+
         PsiFile origFile = completionParameters.getOriginalFile();
 
         // Find all the corresponding require statement file paths
         // given the var name
-        ArrayList<String> paths = findFilePathsForVarName(varName, origFile);
+        ArrayList<String> paths = findRequireFilePathsForVarName(varName, origFile);
         for (String path : paths) {
             completionResultSet.addElement(buildLookupElementWithPath(path));
         }
     }
 
-    public static LookupElement buildLookupElementWithPath(String path) {
-        String completionString = "require('".concat(path).concat("')");
+    public static LookupElement buildLookupElementWithPath(@NotNull String path) {
+        String completionString = REQUIRE_FUNC_NAME.concat("('").concat(path).concat("')");
         return LookupElementBuilder
                 .create(completionString)
                 .withBoldness(true)
                 .withPresentableText(completionString)
                 .withCaseSensitivity(true)
-                .withTailText(";", true)
+                .withTailText(SEMICOLON_STR, true)
                 .withAutoCompletionPolicy(AutoCompletionPolicy.GIVE_CHANCE_TO_OVERWRITE);
     }
 
-    public static boolean isJSRefExpression (PsiElement element) {
+    public static boolean isJSRefExpression (@Nullable PsiElement element) {
+        if (element == null) {
+            return false;
+        }
         PsiElement context = element.getContext();
         return context != null && context instanceof JSReferenceExpression;
     }
 
-    public static boolean isJSVarStatement (PsiElement element) {
+    public static boolean isJSVarStatement (@Nullable PsiElement element) {
         return element instanceof JSVarStatement;
     }
 
-    public static boolean isJSVar (PsiElement element) {
+    public static boolean isJSVar (@Nullable PsiElement element) {
         return element instanceof JSVariable;
     }
 
-    public static ArrayList<String> findFilePathsForVarName(String varName, PsiFile currentPsiFile) {
+    public static @NotNull ArrayList<String> findRequireFilePathsForVarName(@NotNull String varName, @NotNull PsiFile currentPsiFile) {
 
         Project project = currentPsiFile.getProject();
         JSRequireConfig config = JSRequireConfig.getInstanceForProject(project);
         boolean shouldMakePathsRelative = config.getUseRelativePathsForMain();
 
         VirtualFile[] rootJSDirs = new VirtualFile[2];
-        rootJSDirs[0] = config.getMainJSRootDir();
-        rootJSDirs[1] = config.getNodeModulesRootDir();
+        VirtualFile mainJSRootDir = rootJSDirs[0] = config.getMainJSRootDir();
+        VirtualFile nodeModulesDir = rootJSDirs[1] = config.getNodeModulesRootDir();
 
         ArrayList<String> paths = new ArrayList<String>();
         ArrayList<VirtualFile> rootDirFiles;
@@ -118,21 +130,28 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
             if (rootDir == null) {
                 continue;
             }
+            boolean isMainRootDir = mainJSRootDir != null && mainJSRootDir.equals(rootDir);
+            boolean isNodeModulesDir = nodeModulesDir != null && nodeModulesDir.equals(rootDir);
+
+            if (!isMainRootDir && !isNodeModulesDir) {
+                continue;
+            }
 
             rootDirFiles = new ArrayList<VirtualFile>();
 
             // Populates rootDirFiles with VirtualFiles that match the varName
-            // searching throught the root directory
+            // searching through the root directory
             findFilePathForNameHelper(rootDir, varName, rootDirFiles, config);
 
             for (VirtualFile file : rootDirFiles) {
                 if (file != null) {
-                    if (!shouldMakePathsRelative || !config.getMainJSRootDir().equals(rootDir)) {
+                    if (isNodeModulesDir || (!shouldMakePathsRelative && isMainRootDir)) {
                         filePath = getRequirePathFromRootDir(file, rootDir);
                     } else {
                         filePath = getRequirePathRelativeToCurrentFile(currentPsiFile.getVirtualFile(), file);
                     }
                     if (filePath != null) {
+                        filePath = filePath.replace(File.separatorChar, REQUIRE_PATH_SEPARATOR);
                         paths.add(filePath);
                     }
                 }
@@ -142,7 +161,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         return paths;
     }
 
-    private static String getRequirePathFromRootDir(VirtualFile file, VirtualFile rootDir) {
+    private static @NotNull String getRequirePathFromRootDir(@NotNull VirtualFile file, @NotNull VirtualFile rootDir) {
         String ext = file.getExtension();
         String filePath = file.getPath();
         return filePath.substring(
@@ -151,7 +170,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         );
     }
 
-    private static String getRequirePathRelativeToCurrentFile(VirtualFile currentFile, VirtualFile relativeFile) {
+    private static @Nullable String getRequirePathRelativeToCurrentFile(@NotNull VirtualFile currentFile, @NotNull VirtualFile relativeFile) {
         String ext = relativeFile.getExtension();
         String filePath = relativizePaths(currentFile.getParent().getPath(), relativeFile.getPath());
         if (filePath != null) {
@@ -160,7 +179,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         return null;
     }
 
-    private static String relativizePaths(String aAbsolutePath, String bAbsolutePath) {
+    private static @Nullable String relativizePaths(@NotNull String aAbsolutePath, @NotNull String bAbsolutePath) {
         String relPath;
         try {
              relPath = FileUtils.getRelativePath(new File(aAbsolutePath), new File(bAbsolutePath));
@@ -171,15 +190,15 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
     }
 
     private static void findFilePathForNameHelper(
-            final VirtualFile searchDir,
-            final String fileNameWithoutExt,
-            final ArrayList<VirtualFile> files,
-            final JSRequireConfig config
+            @NotNull final VirtualFile searchDir,
+            @NotNull final String fileNameWithoutExt,
+            @NotNull final ArrayList<VirtualFile> files,
+            @NotNull final JSRequireConfig config
     ) {
 
         final ArrayList<VirtualFile> deepIncludedNodeModules = config.getDeepIncludedNodeModules();
         final VirtualFile ownNodeModulesDir = config.getNodeModulesRootDir();
-        final boolean withinOwnNodeModules = ownNodeModulesDir.equals(searchDir);
+        final boolean withinOwnNodeModules = ownNodeModulesDir != null && ownNodeModulesDir.equals(searchDir);
 
         VfsUtilCore.visitChildrenRecursively(searchDir, new VirtualFileVisitor() {
             private boolean isDeepIncludedNodeModule = false;
@@ -206,9 +225,9 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
                 if (!withinOwnNodeModules && isOwnNodeModules(file)) {
                     return false;
                 }
-                // skip dir if the current directory is a node_modules
+               // skip dir if the current directory is a node_modules
                 // directory that isn't our own
-                if (withinOwnNodeModules && !isOwnNodeModules(file) && isANodeModulesDir(file)) {
+                if (!isOwnNodeModules(file) && isANodeModulesDir(file)) {
                     return false;
                 }
                 // camelcase the current file name if it has dashes and
@@ -233,7 +252,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
     }
 
-    public static boolean isPotentialRequireStatement (PsiElement element) {
+    private static boolean isPotentialRequireStatement (@NotNull PsiElement element) {
         String text = element.getText();
         if (text == null) {
             return false;
@@ -248,11 +267,11 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         return true;
     }
 
-    private static String camelCaseString (String input) {
-        if (!input.contains("-")) {
+    private static @NotNull String camelCaseString (@NotNull String input) {
+        if (!input.contains(DASH_STRING)) {
             return input;
         }
-        String[] splitInput = input.split("-");
+        String[] splitInput = input.split(DASH_STRING);
         String str;
         String assembledStr = "";
         for (int i = 0; i < splitInput.length; i++) {
