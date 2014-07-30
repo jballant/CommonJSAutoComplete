@@ -24,6 +24,7 @@ import config.JSRequireConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -112,7 +113,7 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         return element instanceof JSVariable;
     }
 
-    public static @NotNull ArrayList<String> findRequireFilePathsForVarName(@NotNull String varName, @NotNull PsiFile currentPsiFile) {
+    protected static @NotNull ArrayList<String> findRequireFilePathsForVarName(@NotNull String varName, @NotNull PsiFile currentPsiFile) {
 
         Project project = currentPsiFile.getProject();
         JSRequireConfig config = JSRequireConfig.getInstanceForProject(project);
