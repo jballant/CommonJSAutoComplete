@@ -10,9 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by james on 7/19/14.
- */
+
 public class JSRequireConfig {
 
     private static HashMap<String, JSRequireConfig> instances = null;
@@ -173,15 +171,15 @@ public class JSRequireConfig {
         setPersistVal(USE_RELATIVE_PATHS_FOR_MAIN_KEY, value ? TRUE_STRING : FALSE_STRING);
     }
 
-    public @Nullable String getMainJSDirString() {
+    public @NotNull String getMainJSDirString() {
         return getPersistVal(MAIN_JS_DIR_KEY);
     }
 
-    public @Nullable String getNodeModulesDirString() {
+    public @NotNull String getNodeModulesDirString() {
         return getPersistVal(NODE_MODULES_DIR_KEY);
     }
 
-    public @Nullable String getDeepIncludeModulesDirString() {
+    public @NotNull String getDeepIncludeModulesDirString() {
         return getPersistVal(DEEP_INCLUDE_MODULES_DIR_KEY);
     }
 

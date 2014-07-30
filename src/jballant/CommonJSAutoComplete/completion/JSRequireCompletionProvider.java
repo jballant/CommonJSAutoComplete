@@ -27,9 +27,6 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-/**
- * Created by james on 7/15/14.
- */
 public class JSRequireCompletionProvider extends CompletionProvider<CompletionParameters> {
 
     static final String REQUIRE_FUNC_NAME = "require";

@@ -5,16 +5,29 @@
   <vendor url="http://www.1stdibs.com">James Ballantine - 1stdibs.com, Inc</vendor>
 
   <description><![CDATA[
-      Provides AutoComplete for CommonJS require statements. <a href="https://github.com/jballant/CommonJSAutoComplete">Visit Github repo</a> for more documentation and to report issues.
+      Provides AutoComplete for CommonJS require statements. Attempts to locate corresponding modules or files and complete require statements based on variable names.
+      <a href="https://github.com/jballant/CommonJSAutoComplete">Visit Github repo</a> for more documentation and to report issues.
     ]]></description>
 
     <change-notes><![CDATA[
+        <p><strong>0.0.2</strong></p>
+        <ul>
+            <li>Ensure blank node_modules configuration values default to "./node_modules"</li>
+            <li>Path separators fix</li>
+            <li>Added protections to handle exceptions resulting from incorrect configurations</li>
+        </ul>
+
         <p><strong>0.0.1</strong></p>
         <ul>
             <li>Fix bug with relative paths calculation</li>
             <li>Stopped adding semicolons to completion text, so comma separated variables
             can be completed properly. Note: use smart statement completion to complete with semicolon</li>
             <li>Fix bug producing error messages when typing local vars</li>
+        </ul>
+
+        <p><strong>0.0.0</strong></p>
+        <ul>
+            <li>Initial Release</li>
         </ul>
     ]]></change-notes>
 

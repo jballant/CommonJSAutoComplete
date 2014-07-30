@@ -8,9 +8,6 @@ import com.intellij.patterns.PsiElementPattern;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Created by james on 7/14/14.
- */
 public class JSRequireCompletionContributer extends CompletionContributor {
 
     public JSRequireCompletionContributer() {
