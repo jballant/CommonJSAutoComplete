@@ -30,13 +30,13 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
     @Nls
     @Override
     public String getDisplayName() {
-        return "Jamie's test config";
+        return "CommonJS AutoComplete Configuration";
     }
 
     @Nullable
     @Override
     public String getHelpTopic() {
-        return "Jamie's test config";
+        return null;
     }
 
     @Nullable
