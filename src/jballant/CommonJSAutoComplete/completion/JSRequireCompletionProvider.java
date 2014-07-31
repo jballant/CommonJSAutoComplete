@@ -24,7 +24,6 @@ import config.JSRequireConfig;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class JSRequireCompletionProvider extends CompletionProvider<CompletionParameters> {
@@ -180,7 +179,12 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
     private static @Nullable String relativizePaths(@NotNull String aAbsolutePath, @NotNull String bAbsolutePath) {
         String relPath;
         try {
-             relPath = FileUtils.getRelativePath(new File(aAbsolutePath), new File(bAbsolutePath));
+            relPath = FileUtils.getRelativePath(new File(aAbsolutePath), new File(bAbsolutePath));
+            // If the first character is not a '.' we add a ./ to indicate that
+            // the file is in the same directory and not a node module
+            if (relPath.charAt(0) != '.') {
+                relPath = "./".concat(relPath);
+            }
         } catch (Exception e) {
             return null;
         }
