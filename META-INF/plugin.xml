@@ -13,7 +13,7 @@
         <p><strong>0.0.2</strong></p>
         <ul>
             <li>Ensure blank node_modules configuration values default to "./node_modules"</li>
-            <li>Fix for relative files in same directory</li>
+            <li>Fix for path bug when requiring relative file in same directory</li>
             <li>Path separators fix</li>
             <li>Added protections to handle exceptions resulting from incorrect configurations</li>
         </ul>
