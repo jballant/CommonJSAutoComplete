@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>jballant.CommonJSAutoComplete</id>
   <name>CommonJS AutoComplete</name>
-  <version>0.0.2</version>
+  <version>0.1.0</version>
   <vendor url="http://www.1stdibs.com">James Ballantine - 1stdibs.com, Inc</vendor>
 
   <description><![CDATA[
@@ -10,6 +10,14 @@
     ]]></description>
 
     <change-notes><![CDATA[
+
+        <p><strong>0.1.0</strong></p>
+        <ul>
+            <li>Add more matches to var names. Now you can match node-modules or libraries with "-js" or "js" at the end of the file name, and now ignores first letter capitalization.</li
+            <li>Default using relative paths for files in main js directory to "true"</li>
+            <li>Fix bug causing error when multiple projects open</li>
+        </ul>
+
         <p><strong>0.0.2</strong></p>
         <ul>
             <li>Ensure blank node_modules configuration values default to "./node_modules"</li>

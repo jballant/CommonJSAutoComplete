@@ -31,6 +31,8 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
     static final String REQUIRE_FUNC_NAME = "require";
     static final String DASH_STRING = "-";
     static final String SEMICOLON_STR = ";";
+    static final String JS_MODULE_SUFFIX = "js";
+    static final String JS_CAMELCASE_MODULE_SUFFIX = "Js";
     static final char REQUIRE_PATH_SEPARATOR = '/';
 
     @Override
@@ -167,7 +169,10 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         );
     }
 
-    private static @Nullable String getRequirePathRelativeToCurrentFile(@NotNull VirtualFile currentFile, @NotNull VirtualFile relativeFile) {
+    private static @Nullable String getRequirePathRelativeToCurrentFile(
+            @NotNull VirtualFile currentFile,
+            @NotNull VirtualFile relativeFile
+    ) {
         String ext = relativeFile.getExtension();
         String filePath = relativizePaths(currentFile.getParent().getPath(), relativeFile.getPath());
         if (filePath != null) {
@@ -176,7 +181,10 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         return null;
     }
 
-    private static @Nullable String relativizePaths(@NotNull String aAbsolutePath, @NotNull String bAbsolutePath) {
+    private static @Nullable String relativizePaths(
+            @NotNull String aAbsolutePath,
+            @NotNull String bAbsolutePath
+    ) {
         String relPath;
         try {
             relPath = FileUtils.getRelativePath(new File(aAbsolutePath), new File(bAbsolutePath));
@@ -232,9 +240,9 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
                 if (!isOwnNodeModules(file) && isANodeModulesDir(file)) {
                     return false;
                 }
-                // camelcase the current file name if it has dashes and
+                // if the file is an allowed extension then
                 // then test to see if the varName + extension is the same
-                if (hasAllowedExtension && camelCaseString(curFileName).equals(fileNameWithoutExt.concat(ext))) {
+                if (hasAllowedExtension && JSRequireCompletionProvider.varNameMatchesFileString(fileNameWithoutExt, curFileName, ext)) {
                     files.add(file);
                 }
                 // If we are withinOwnNodeModules and our deepIncludedNodeModules contains
@@ -254,6 +262,21 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
 
     }
 
+    private static boolean varNameMatchesFileString(
+            @NotNull String varName,
+            @NotNull String fileName,
+            @NotNull String ext
+    ) {
+        String camelCaseFile = camelCaseString(fileName);
+        camelCaseFile = capitalize(camelCaseFile);
+        varName = capitalize(varName);
+
+        return
+            (camelCaseFile.equals(varName.concat(ext))) ||
+            (camelCaseFile.equals(varName.concat(JS_MODULE_SUFFIX).concat(ext))) ||
+            (camelCaseFile.equals(varName.concat(JS_CAMELCASE_MODULE_SUFFIX).concat(ext)));
+    }
+
     private static boolean isPotentialRequireStatement (@NotNull PsiElement element) {
         String text = element.getText();
         if (text == null) {
@@ -267,6 +290,17 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
             }
         }
         return true;
+    }
+
+    private static @NotNull String capitalize (@NotNull String str) {
+        if (str.length() == 0) {
+            return str;
+        }
+        String capital = str.substring(0, 1).toUpperCase();
+        if (str.length() == 1) {
+            return capital;
+        }
+        return capital.concat(str.substring(1));
     }
 
     private static @NotNull String camelCaseString (@NotNull String input) {

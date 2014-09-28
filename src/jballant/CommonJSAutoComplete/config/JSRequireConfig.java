@@ -36,6 +36,9 @@ public class JSRequireConfig {
 
     private Project myProject = null;
 
+    private boolean useRelativePathsForMain = false;
+    private boolean hasRetrievedUseRelativePathsForMainVal = false;
+
     public static @NotNull JSRequireConfig getInstanceForProject (@NotNull Project project) {
         if (instances == null) {
             instances = new HashMap<String, JSRequireConfig>();
@@ -63,9 +66,7 @@ public class JSRequireConfig {
         }
 
         if (mainJSRootDir == null) {
-            String mainJSDirString = getMainJSDirString();
-            mainJSDirString = mainJSDirString != null ? mainJSDirString : "";
-            VirtualFile main = project.getBaseDir().findFileByRelativePath(mainJSDirString);
+            VirtualFile main = project.getBaseDir().findFileByRelativePath(getMainJSDirString());
             if (main != null) {
                 mainJSRootDir = main;
             }
@@ -73,7 +74,7 @@ public class JSRequireConfig {
 
         if (nodeModulesRootDir == null) {
             String nodeModulesDirString = getNodeModulesDirString();
-            nodeModulesDirString = nodeModulesDirString != null ? nodeModulesDirString : NODE_MODULES_DIR_NAME;
+            nodeModulesDirString = !nodeModulesDirString.equals("") ? nodeModulesDirString : NODE_MODULES_DIR_NAME;
             VirtualFile nodeModules = project.getBaseDir().findFileByRelativePath(nodeModulesDirString);
             if (nodeModules != null) {
                 nodeModulesRootDir = nodeModules; // node modules are only shallow includes by default
@@ -168,6 +169,8 @@ public class JSRequireConfig {
     }
 
     public void setUseRelativePathsForMain(boolean value) {
+        hasRetrievedUseRelativePathsForMainVal = true;
+        useRelativePathsForMain = value;
         setPersistVal(USE_RELATIVE_PATHS_FOR_MAIN_KEY, value ? TRUE_STRING : FALSE_STRING);
     }
 
@@ -184,7 +187,12 @@ public class JSRequireConfig {
     }
 
     public boolean getUseRelativePathsForMain() {
-        return getPersistVal(USE_RELATIVE_PATHS_FOR_MAIN_KEY).equals(TRUE_STRING);
+        if (!hasRetrievedUseRelativePathsForMainVal) {
+            String stringVal = getPersistVal(USE_RELATIVE_PATHS_FOR_MAIN_KEY);
+            useRelativePathsForMain = stringVal.equals("") || stringVal.equals(TRUE_STRING);
+            hasRetrievedUseRelativePathsForMainVal = true;
+        }
+        return useRelativePathsForMain;
     }
 
     private String formatKey(@NotNull String key) {
