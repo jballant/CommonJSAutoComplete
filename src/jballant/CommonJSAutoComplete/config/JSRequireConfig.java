@@ -24,6 +24,7 @@ public class JSRequireConfig {
     private static final String NODE_MODULES_DIR_KEY = "jballant.CommonJSAutoComplete.nodeModulesDir";
     private static final String DEEP_INCLUDE_MODULES_DIR_KEY = "jballant.CommonJSAutoComplete.deepIncludeNodeModulesKey";
     private static final String USE_RELATIVE_PATHS_FOR_MAIN_KEY = "jballant.CommonJSAutoComplete.useRelativePathsForMainKey";
+    private static final String SHOULD_IGNORE_CASE_KEY = "jballant.CommonJSAutoComplete.shouldIgnoreCaseKey";
 
     private static final String TRUE_STRING = "Y";
     private static final String FALSE_STRING = "N";
@@ -38,6 +39,9 @@ public class JSRequireConfig {
 
     private boolean useRelativePathsForMain = false;
     private boolean hasRetrievedUseRelativePathsForMainVal = false;
+
+    private boolean shouldIgnoreCase = false;
+    private boolean hasRetrievedShouldIgnoreCase = false;
 
     public static @NotNull JSRequireConfig getInstanceForProject (@NotNull Project project) {
         if (instances == null) {
@@ -174,6 +178,12 @@ public class JSRequireConfig {
         setPersistVal(USE_RELATIVE_PATHS_FOR_MAIN_KEY, value ? TRUE_STRING : FALSE_STRING);
     }
 
+    public void setShouldIgnoreCase(boolean value) {
+        hasRetrievedShouldIgnoreCase = true;
+        shouldIgnoreCase = value;
+        setPersistVal(SHOULD_IGNORE_CASE_KEY, value ? TRUE_STRING : FALSE_STRING);
+    }
+
     public @NotNull String getMainJSDirString() {
         return getPersistVal(MAIN_JS_DIR_KEY);
     }
@@ -189,10 +199,19 @@ public class JSRequireConfig {
     public boolean getUseRelativePathsForMain() {
         if (!hasRetrievedUseRelativePathsForMainVal) {
             String stringVal = getPersistVal(USE_RELATIVE_PATHS_FOR_MAIN_KEY);
-            useRelativePathsForMain = stringVal.equals("") || stringVal.equals(TRUE_STRING);
+            useRelativePathsForMain = stringVal.equals("") || stringVal.equals(TRUE_STRING); // default to true
             hasRetrievedUseRelativePathsForMainVal = true;
         }
         return useRelativePathsForMain;
+    }
+
+    public boolean getShouldIgnoreCase() {
+        if (!hasRetrievedShouldIgnoreCase) {
+            String stringVal = getPersistVal(SHOULD_IGNORE_CASE_KEY);
+            shouldIgnoreCase = stringVal.equals(TRUE_STRING); // default to false
+            hasRetrievedShouldIgnoreCase = true;
+        }
+        return shouldIgnoreCase;
     }
 
     private String formatKey(@NotNull String key) {

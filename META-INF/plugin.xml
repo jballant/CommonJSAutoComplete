@@ -6,14 +6,17 @@
 
   <description><![CDATA[
       Provides AutoComplete for CommonJS require statements. Attempts to locate corresponding modules or files and complete require statements based on variable names.
-      <a href="https://github.com/jballant/CommonJSAutoComplete">Visit Github repo</a> for more documentation and to report issues.
+      <br />
+      <br />
+      <a href="https://github.com/jballant/CommonJSAutoComplete">Visit Github repo</a> for more documentation and to report issues. If you have a feature request that you would like to suggest, please post it here as well.
     ]]></description>
 
     <change-notes><![CDATA[
 
         <p><strong>0.1.0</strong></p>
         <ul>
-            <li>Add more matches to var names. Now you can match node-modules or libraries with "-js" or "js" at the end of the file name, and now ignores first letter capitalization.</li
+            <li>Added preferences checkbox that allows you to ignore the casing when matching variables to modules</li>
+            <li>Add more matches to var names. Now you can match node-modules or files with "-js" or "js" at the end of the name</li>
             <li>Default using relative paths for files in main js directory to "true"</li>
             <li>Fix bug causing error when multiple projects open</li>
         </ul>

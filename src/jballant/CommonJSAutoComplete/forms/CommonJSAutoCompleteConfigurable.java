@@ -22,6 +22,7 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
     private JLabel nodeModulesDirLabel;
     private JTextField nodeModulesDirField;
     private JLabel deepIncludeNodeModulesLabel;
+    private JCheckBox shouldIgnoreCase;
 
     private Project myProject;
 
@@ -51,6 +52,7 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
         nodeModulesDirField.setText(myConfig.getNodeModulesDirString());
         deepIncludeNodeModulesField.setText(myConfig.getDeepIncludeModulesDirString());
         useRelativePathsCheckBox.setSelected(myConfig.getUseRelativePathsForMain());
+        shouldIgnoreCase.setSelected(myConfig.getShouldIgnoreCase());
 
         return myPanel;
     }
@@ -61,20 +63,14 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
         String nodeModulesDirString = nodeModulesDirField.getText().trim();
         String deepIncludeNodeModulesString = deepIncludeNodeModulesField.getText().trim();
         boolean useRelativePathsForMainJsDir = useRelativePathsCheckBox.isSelected();
+        boolean shouldIgnoreCaseBool = shouldIgnoreCase.isSelected();
 
-        if (!myConfig.getMainJSDirString().equals(mainJSRootDirString)) {
-            return true;
-        }
-        if (!myConfig.getNodeModulesDirString().equals(nodeModulesDirString)) {
-            return true;
-        }
-        if (!myConfig.getDeepIncludeModulesDirString().equals(deepIncludeNodeModulesString)) {
-            return true;
-        }
-        if (myConfig.getUseRelativePathsForMain() != useRelativePathsForMainJsDir) {
-            return true;
-        }
-        return false;
+        return
+                (!myConfig.getMainJSDirString().equals(mainJSRootDirString))
+                || (!myConfig.getNodeModulesDirString().equals(nodeModulesDirString))
+                || (!myConfig.getDeepIncludeModulesDirString().equals(deepIncludeNodeModulesString))
+                || (myConfig.getUseRelativePathsForMain() != useRelativePathsForMainJsDir)
+                || (myConfig.getShouldIgnoreCase() != shouldIgnoreCaseBool);
     }
 
     @Override
@@ -84,11 +80,13 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
         String nodeModulesDirString = nodeModulesDirField.getText();
         String deepIncludeNodeModulesString = deepIncludeNodeModulesField.getText();
         boolean useRelativePathsForMainJsDir = useRelativePathsCheckBox.isSelected();
+        boolean shouldIgnoreCaseBool = shouldIgnoreCase.isSelected();
 
         myConfig.setMainJSDirString(mainJSRootDirString.trim());
         myConfig.setNodeModulesDirString(nodeModulesDirString.trim());
         myConfig.setDeepIncludeModulesDirString(deepIncludeNodeModulesString.trim());
         myConfig.setUseRelativePathsForMain(useRelativePathsForMainJsDir);
+        myConfig.setShouldIgnoreCase(shouldIgnoreCaseBool);
 
     }
 
