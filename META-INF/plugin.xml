@@ -8,7 +8,7 @@
       Provides AutoComplete for CommonJS require statements. Attempts to locate corresponding modules or files and complete require statements based on variable names.
       <br />
       <br />
-      <a href="https://github.com/jballant/CommonJSAutoComplete">Visit Github repo</a> for more documentation and to report issues. If you have a feature request that you would like to suggest, please post it here as well.
+      <a href="https://github.com/jballant/CommonJSAutoComplete">Visit Github repo</a> for more documentation and to report issues. If you have a feature request that you would like to make, please post it here as well.
     ]]></description>
 
     <change-notes><![CDATA[
