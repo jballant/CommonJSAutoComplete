@@ -2,7 +2,6 @@ package config;
 
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.impl.ProjectImpl;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +11,8 @@ import java.util.HashMap;
 
 
 public class JSRequireConfig {
+
+    public static boolean DEBUG = false;
 
     private static HashMap<String, JSRequireConfig> instances = null;
 
@@ -36,6 +37,10 @@ public class JSRequireConfig {
     private ArrayList<VirtualFile> includedNodeModules = null;
 
     private Project myProject = null;
+
+    private String mainJSDirString = null;
+    private String nodeModulesDirString = null;
+    private String deepIncludedNodeModulesString = null;
 
     private boolean useRelativePathsForMain = false;
     private boolean hasRetrievedUseRelativePathsForMainVal = false;
@@ -150,19 +155,39 @@ public class JSRequireConfig {
     }
 
     private void setPersistVal(@NotNull String key, @NotNull String value) {
-        PropertiesComponent.getInstance(myProject).setValue(formatKey(key), value.trim());
+        try {
+            if (!myProject.isDisposed()) {
+                PropertiesComponent.getInstance(myProject).setValue(formatKey(key), value.trim());
+            }
+        } catch (AssertionError error) {
+            if (DEBUG) {
+                error.printStackTrace();
+            }
+        }
     }
 
     public @NotNull String getPersistVal(@NotNull String key) {
-        return PropertiesComponent.getInstance(myProject).getValue(formatKey(key), "");
+        String val = "";
+        try {
+            if (!myProject.isDisposed()) {
+                val = PropertiesComponent.getInstance(myProject).getValue(formatKey(key), "");
+            }
+        } catch (AssertionError error) {
+            if (DEBUG) {
+                error.printStackTrace();
+            }
+        }
+        return val;
     }
 
     public void setMainJSDirString(@NotNull String value) {
+        mainJSDirString = value;
         setPersistVal(MAIN_JS_DIR_KEY, value);
         setMainJSDirWithString(value);
     }
 
     public void setNodeModulesDirString(@NotNull String value) {
+        nodeModulesDirString = value;
         setPersistVal(NODE_MODULES_DIR_KEY, value);
         setNodeModulesDirWithString(value);
     }
@@ -185,15 +210,24 @@ public class JSRequireConfig {
     }
 
     public @NotNull String getMainJSDirString() {
-        return getPersistVal(MAIN_JS_DIR_KEY);
+        if (mainJSDirString == null) {
+            mainJSDirString = getPersistVal(MAIN_JS_DIR_KEY);
+        }
+        return mainJSDirString;
     }
 
     public @NotNull String getNodeModulesDirString() {
+        if (nodeModulesDirString == null) {
+            nodeModulesDirString = getPersistVal(NODE_MODULES_DIR_KEY);
+        }
         return getPersistVal(NODE_MODULES_DIR_KEY);
     }
 
     public @NotNull String getDeepIncludeModulesDirString() {
-        return getPersistVal(DEEP_INCLUDE_MODULES_DIR_KEY);
+        if (deepIncludedNodeModulesString == null) {
+            deepIncludedNodeModulesString = getPersistVal(DEEP_INCLUDE_MODULES_DIR_KEY);
+        }
+        return deepIncludedNodeModulesString;
     }
 
     public boolean getUseRelativePathsForMain() {
@@ -215,8 +249,7 @@ public class JSRequireConfig {
     }
 
     private String formatKey(@NotNull String key) {
-        ProjectImpl myProjectImpl = (ProjectImpl) myProject;
-        return key . concat("-") . concat(myProjectImpl.getDefaultName());
+        return key . concat("-") . concat(myProject.getBasePath());
     }
 
 }

@@ -47,6 +47,11 @@ public class StringUtil {
 
     public static boolean stringIsPotentialSubString (@NotNull String subString, @NotNull String string) {
         int len = subString.length();
+
+        if (len > string.length()) {
+            return false;
+        }
+
         for (int i = 0; i < len; i++) {
             if (subString.charAt(i) != string.charAt(i)) {
                 return false;
