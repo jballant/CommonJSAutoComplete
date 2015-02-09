@@ -15,7 +15,8 @@
 
         <p><strong>0.1.1</strong></p>
         <ul>
-            <li>Bug fixes</li>
+            <li>Bug fixes (note: project settings for this module will need to be set up again)</li>
+            <li>Node modules with 'node-' prefix can now be matched to a variable without the prefix (e.g. "var dir = require('node-dir');")</li>
         </ul>
 
         <p><strong>0.1.0</strong></p>

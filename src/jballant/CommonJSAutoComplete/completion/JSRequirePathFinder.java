@@ -21,6 +21,7 @@ public class JSRequirePathFinder {
     static final char REQUIRE_PATH_SEPARATOR = '/';
     static final String JS_MODULE_SUFFIX = "js";
     static final String JS_CAMELCASE_MODULE_SUFFIX = "Js";
+    static final String NODE_PREFIX = "node";
 
     private boolean shouldMakePathsRelative;
     private VirtualFile mainJsDir = null;
@@ -202,7 +203,9 @@ public class JSRequirePathFinder {
         return
                 (camelCaseFile.equals(varName.concat(ext))) ||
                 (camelCaseFile.equals(varName.concat(jsModuleSuffix).concat(ext))) ||
-                (camelCaseFile.equals(varName.concat(jsCamelCaseModuleSuffix).concat(ext)));
+                (camelCaseFile.equals(varName.concat(jsCamelCaseModuleSuffix).concat(ext))) ||
+                (camelCaseFile.equals(varName.concat(jsCamelCaseModuleSuffix).concat(ext))) ||
+                (camelCaseFile.equals(NODE_PREFIX.concat(StringUtil.capitalize(varName))));
     }
 
 
