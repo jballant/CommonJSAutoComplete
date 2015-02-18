@@ -1,5 +1,6 @@
 package completion;
 
+import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
@@ -31,7 +32,6 @@ public class JSRequirePathFinder {
     private boolean ignoreCapitalization = false;
     private PsiFile currentPsiFile = null;
     private JSRequireConfig config = null;
-    private ArrayList<VirtualFile> deepIncludedNodeModules = null;
 
     public JSRequirePathFinder(@NotNull PsiFile currentFile) {
         currentPsiFile = currentFile;
@@ -139,7 +139,6 @@ public class JSRequirePathFinder {
 
                 String curFileName = file.getName();
                 String ext = file.getExtension();
-                boolean hasAllowedExtension = config.hasAllowedExtension(ext);
                 ext = ext != null ? DOT_STRING.concat(ext) : "";
                 // skip dir if current file or folder is hidden
                 if (curFileName.charAt(0) == DOT_CHAR) {
@@ -157,7 +156,7 @@ public class JSRequirePathFinder {
                 }
                 // if the file is an allowed extension then
                 // then test to see if the varName + extension is the same
-                if (hasAllowedExtension && varNameMatchesFileString(fileNameWithoutExt, curFileName, ext)) {
+                if (file.getFileType().equals(JavaScriptFileType.INSTANCE) && varNameMatchesFileString(fileNameWithoutExt, curFileName, ext)) {
                     files.add(file);
                 }
                 // If we are withinOwnNodeModules and our deepIncludedNodeModules contains
