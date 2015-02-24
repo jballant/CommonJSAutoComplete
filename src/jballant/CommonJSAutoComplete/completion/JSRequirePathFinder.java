@@ -1,6 +1,8 @@
 package completion;
 
+import com.intellij.json.JsonFileType;
 import com.intellij.lang.javascript.JavaScriptFileType;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
@@ -122,9 +124,10 @@ public class JSRequirePathFinder {
         final ArrayList<VirtualFile> deepIncludedNodeModules = config.getDeepIncludedNodeModules();
         final VirtualFile ownNodeModulesDir = config.getNodeModulesRootDir();
         final boolean withinOwnNodeModules = ownNodeModulesDir != null && ownNodeModulesDir.equals(searchDir);
+        final VirtualFile projectRoot = config.getMainJSRootDir();
 
         VfsUtilCore.visitChildrenRecursively(searchDir, new VirtualFileVisitor() {
-            private boolean isDeepIncludedNodeModule = false;
+
             final char DOT_CHAR = '.';
             final String DOT_STRING = ".";
 
@@ -144,27 +147,47 @@ public class JSRequirePathFinder {
                 if (curFileName.charAt(0) == DOT_CHAR) {
                     return false;
                 }
+                boolean isOwnNodeModDir = isOwnNodeModules(file);
                 // skip dir if we are not searching within our node modules
                 // and this file is our node modules directory
-                if (!withinOwnNodeModules && isOwnNodeModules(file)) {
+                if (!withinOwnNodeModules && isOwnNodeModDir) {
                     return false;
                 }
+
                 // skip dir if the current directory is a node_modules
                 // directory that isn't our own
-                if (!isOwnNodeModules(file) && isANodeModulesDir(file)) {
+                if (!isOwnNodeModDir && isANodeModulesDir(file)) {
                     return false;
                 }
-                // if the file is an allowed extension then
-                // then test to see if the varName + extension is the same
-                if (file.getFileType().equals(JavaScriptFileType.INSTANCE) && varNameMatchesFileString(fileNameWithoutExt, curFileName, ext)) {
+                boolean isOwnNodeModule = isNodeModule(file);
+                // if the file is an allowed extension or a node_module or is then test to see
+                // if the varName + extension is the same
+                if ((isOwnNodeModule || isJSFile(file)) && varNameMatchesFileString(fileNameWithoutExt, curFileName, ext)) {
                     files.add(file);
                 }
-                // If we are withinOwnNodeModules and our deepIncludedNodeModules contains
-                // the current file, then we can search that folder
-                if (withinOwnNodeModules && !isDeepIncludedNodeModule && deepIncludedNodeModules.contains(file)) {
-                    isDeepIncludedNodeModule = true;
-                }
-                return (file.isDirectory() && (!withinOwnNodeModules || isDeepIncludedNodeModule));
+
+                return (
+                    file.isDirectory() &&
+                    !isANodeModulesDir(file) && (
+                            isWithinMainJS() ||
+                            deepIncludedNodeModules.contains(file) ||
+                            hasDeepIncludedNoduleModuleAncestor(file)
+                    )
+                );
+            }
+
+            private boolean isWithinMainJS() {
+                return searchDir.equals(mainJsDir);
+            }
+
+            private boolean isJSFile(@NotNull VirtualFile file) {
+                FileType fileType = file.getFileType();
+                return fileType.equals(JavaScriptFileType.INSTANCE) || fileType.equals(JsonFileType.INSTANCE);
+            }
+
+            private boolean isNodeModule(@NotNull VirtualFile file) {
+                VirtualFile parent = file.getParent();
+                return parent != null && isOwnNodeModules(parent) && (file.isDirectory() || isJSFile(file));
             }
 
             private boolean isANodeModulesDir(@NotNull VirtualFile file) {
@@ -173,6 +196,23 @@ public class JSRequirePathFinder {
 
             private boolean isOwnNodeModules(@NotNull VirtualFile file) {
                 return file.equals(ownNodeModulesDir);
+            }
+
+            private boolean hasDeepIncludedNoduleModuleAncestor(@NotNull VirtualFile dir) {
+                if (deepIncludedNodeModules.size() == 0) {
+                    return false;
+                }
+                VirtualFile parent = dir.getParent();
+                while (parent != null) {
+                    if (deepIncludedNodeModules.contains(parent)) {
+                        return true;
+                    }
+                    if (mainJsDir.equals(parent) || isOwnNodeModules(parent)) {
+                        return false;
+                    }
+                    parent = parent.getParent();
+                }
+                return false;
             }
         });
 
