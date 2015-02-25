@@ -194,6 +194,7 @@ public class JSRequireConfig {
 
     public void setDeepIncludeModulesDirString(@NotNull String value) {
         setPersistVal(DEEP_INCLUDE_MODULES_DIR_KEY, value);
+        deepIncludedNodeModulesString = value;
         determineDeepIncludedNodeModules(value);
     }
 
