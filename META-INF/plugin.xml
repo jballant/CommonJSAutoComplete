@@ -17,7 +17,8 @@
         <ul>
             <li>Bug fixes (note: project settings for this module will need to be set up again)</li>
             <li>Node modules with 'node-' prefix can now be matched to a variable without the prefix (e.g. "var dir = require('node-dir');")</li>
-            <li>Allow other file extensions that are associated with JavaScript file type (see "File Types" in the perferences menu)</li>
+            <li>Allow other file extensions that are associated with JavaScript file type (see "File Types" in the preferences menu)</li>
+            <li>Allow user to require json files</li>
         </ul>
 
         <p><strong>0.1.0</strong></p>
