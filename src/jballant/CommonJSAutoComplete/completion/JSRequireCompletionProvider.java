@@ -10,10 +10,12 @@ import com.intellij.lang.javascript.JavascriptLanguage;
 import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.lang.javascript.psi.JSVarStatement;
 import com.intellij.lang.javascript.psi.JSVariable;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.ProcessingContext;
 import completion.util.StringUtil;
+import config.JSRequireConfig;
 import org.jetbrains.annotations.NotNull;
 
 import org.jetbrains.annotations.Nullable;
@@ -69,6 +71,8 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         }
 
         PsiFile origFile = completionParameters.getOriginalFile();
+        Project currentProject = origFile.getProject();
+        boolean useDoubleQuotes = JSRequireConfig.getInstanceForProject(currentProject).getShouldUseDoubleQuotes();
 
         JSRequirePathFinder pathFinder = new JSRequirePathFinder(origFile);
 
@@ -76,12 +80,12 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
         // given the var name
         ArrayList<String> paths = pathFinder.findPathsForVarName(varName);
         for (String path : paths) {
-            completionResultSet.addElement(buildLookupElementWithPath(path));
+            completionResultSet.addElement(buildLookupElementWithPath(path, useDoubleQuotes));
         }
     }
 
-    public static LookupElement buildLookupElementWithPath(@NotNull String path) {
-        String completionString = REQUIRE_FUNC_NAME.concat("('").concat(path).concat("')");
+    public static @NotNull LookupElement buildLookupElementWithPath(@NotNull String path, boolean useDoubleQuotes) {
+        String completionString = generateRequireStringForPath(path, useDoubleQuotes);
         return LookupElementBuilder
                 .create(completionString)
                 .withBoldness(true)
@@ -89,6 +93,13 @@ public class JSRequireCompletionProvider extends CompletionProvider<CompletionPa
                 .withCaseSensitivity(true)
                 .withTailText(SEMICOLON_STR, true)
                 .withAutoCompletionPolicy(AutoCompletionPolicy.GIVE_CHANCE_TO_OVERWRITE);
+    }
+
+    public static @NotNull String generateRequireStringForPath(@NotNull String path, boolean useDoubleQuotes) {
+        char quote = useDoubleQuotes ? '"' : '\'';
+        String open = "(" + quote;
+        String close = quote + ")";
+        return REQUIRE_FUNC_NAME.concat(open).concat(path).concat(close);
     }
 
     public static boolean isJSRefExpression (@Nullable PsiElement element) {

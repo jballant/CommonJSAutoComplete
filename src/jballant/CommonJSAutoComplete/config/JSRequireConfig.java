@@ -26,6 +26,7 @@ public class JSRequireConfig {
     private static final String DEEP_INCLUDE_MODULES_DIR_KEY = "jballant.CommonJSAutoComplete.deepIncludeNodeModulesKey";
     private static final String USE_RELATIVE_PATHS_FOR_MAIN_KEY = "jballant.CommonJSAutoComplete.useRelativePathsForMainKey";
     private static final String SHOULD_IGNORE_CASE_KEY = "jballant.CommonJSAutoComplete.shouldIgnoreCaseKey";
+    private static final String SHOULD_USE_DOUBLE_QUOTES_KEY = "jballant.CommonJSAutoComplete.shouldUseDoubleQuotesKey";
 
     private static final String TRUE_STRING = "Y";
     private static final String FALSE_STRING = "N";
@@ -47,6 +48,9 @@ public class JSRequireConfig {
 
     private boolean shouldIgnoreCase = false;
     private boolean hasRetrievedShouldIgnoreCase = false;
+
+    private boolean shouldUseDoubleQuotes = false;
+    private boolean hasRetrievedShouldUseDoubleQuotes = false;
 
     public static @NotNull JSRequireConfig getInstanceForProject (@NotNull Project project) {
         if (instances == null) {
@@ -208,6 +212,21 @@ public class JSRequireConfig {
         hasRetrievedShouldIgnoreCase = true;
         shouldIgnoreCase = value;
         setPersistVal(SHOULD_IGNORE_CASE_KEY, value ? TRUE_STRING : FALSE_STRING);
+    }
+
+    public void setShouldUseDoubleQuotes(boolean value) {
+        hasRetrievedShouldUseDoubleQuotes = true;
+        shouldUseDoubleQuotes = value;
+        setPersistVal(SHOULD_USE_DOUBLE_QUOTES_KEY, value ? TRUE_STRING : FALSE_STRING);
+    }
+
+    public boolean getShouldUseDoubleQuotes() {
+        if (!hasRetrievedShouldUseDoubleQuotes) {
+            String stringVal = getPersistVal(SHOULD_USE_DOUBLE_QUOTES_KEY);
+            shouldUseDoubleQuotes = stringVal.equals(TRUE_STRING); // default to false
+            hasRetrievedShouldUseDoubleQuotes = true;
+        }
+        return shouldUseDoubleQuotes;
     }
 
     public @NotNull String getMainJSDirString() {

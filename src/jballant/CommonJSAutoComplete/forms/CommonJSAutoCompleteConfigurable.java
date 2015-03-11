@@ -23,6 +23,7 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
     private JTextField nodeModulesDirField;
     private JLabel deepIncludeNodeModulesLabel;
     private JCheckBox shouldIgnoreCase;
+    private JCheckBox useDoubleQuotesField;
 
     private Project myProject;
 
@@ -53,6 +54,7 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
         deepIncludeNodeModulesField.setText(myConfig.getDeepIncludeModulesDirString());
         useRelativePathsCheckBox.setSelected(myConfig.getUseRelativePathsForMain());
         shouldIgnoreCase.setSelected(myConfig.getShouldIgnoreCase());
+        useDoubleQuotesField.setSelected(myConfig.getShouldUseDoubleQuotes());
 
         return myPanel;
     }
@@ -64,13 +66,15 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
         String deepIncludeNodeModulesString = deepIncludeNodeModulesField.getText().trim();
         boolean useRelativePathsForMainJsDir = useRelativePathsCheckBox.isSelected();
         boolean shouldIgnoreCaseBool = shouldIgnoreCase.isSelected();
+        boolean shouldUseDoubleQuotesBool = useDoubleQuotesField.isSelected();
 
         return
                 (!myConfig.getMainJSDirString().equals(mainJSRootDirString))
                 || (!myConfig.getNodeModulesDirString().equals(nodeModulesDirString))
                 || (!myConfig.getDeepIncludeModulesDirString().equals(deepIncludeNodeModulesString))
                 || (myConfig.getUseRelativePathsForMain() != useRelativePathsForMainJsDir)
-                || (myConfig.getShouldIgnoreCase() != shouldIgnoreCaseBool);
+                || (myConfig.getShouldIgnoreCase() != shouldIgnoreCaseBool)
+                || (myConfig.getShouldUseDoubleQuotes() != shouldUseDoubleQuotesBool);
     }
 
     @Override
@@ -81,12 +85,14 @@ public class CommonJSAutoCompleteConfigurable implements Configurable {
         String deepIncludeNodeModulesString = deepIncludeNodeModulesField.getText();
         boolean useRelativePathsForMainJsDir = useRelativePathsCheckBox.isSelected();
         boolean shouldIgnoreCaseBool = shouldIgnoreCase.isSelected();
+        boolean shouldUseDoubleQuotesBool = useDoubleQuotesField.isSelected();
 
         myConfig.setMainJSDirString(mainJSRootDirString.trim());
         myConfig.setNodeModulesDirString(nodeModulesDirString.trim());
         myConfig.setDeepIncludeModulesDirString(deepIncludeNodeModulesString.trim());
         myConfig.setUseRelativePathsForMain(useRelativePathsForMainJsDir);
         myConfig.setShouldIgnoreCase(shouldIgnoreCaseBool);
+        myConfig.setShouldUseDoubleQuotes(shouldUseDoubleQuotesBool);
 
     }
 
