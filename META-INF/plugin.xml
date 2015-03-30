@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>jballant.CommonJSAutoComplete</id>
   <name>CommonJS AutoComplete</name>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
   <vendor url="http://www.1stdibs.com">James Ballantine - 1stdibs.com, Inc</vendor>
 
   <description><![CDATA[
