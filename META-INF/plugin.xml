@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>jballant.CommonJSAutoComplete</id>
   <name>CommonJS AutoComplete</name>
-  <version>0.1.2</version>
+  <version>0.1.3</version>
   <vendor url="http://www.1stdibs.com">James Ballantine - 1stdibs.com, Inc</vendor>
 
   <description><![CDATA[
@@ -12,6 +12,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+
+        <p><strong>0.1.3</strong></p>
+        <ul>
+            <li>Version for IDEA 14 / PHPStorm 8 / WebStorm 8</li>
+        </ul>
 
         <p><strong>0.1.2</strong></p>
         <ul>
