@@ -15,6 +15,12 @@
 
         <p><strong>0.1.4</strong></p>
         <ul>
+            <li>Version for IDEA 14 / PHPStorm 8 / WebStorm 8</li>
+            <li>Bundle apache ant library with plugin</li>
+        </ul>
+
+        <p><strong>0.1.4</strong></p>
+        <ul>
             <li>Version for IDEA 13 / PHPStorm 7 / WebStorm 7</li>
             <li>Bundle apache ant library with plugin</li>
         </ul>

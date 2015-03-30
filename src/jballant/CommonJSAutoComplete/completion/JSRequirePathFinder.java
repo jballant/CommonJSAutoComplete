@@ -1,8 +1,8 @@
 package completion;
 
-//import com.intellij.json.JsonFileType;
+import com.intellij.json.JsonFileType;
 import com.intellij.lang.javascript.JavaScriptFileType;
-import com.intellij.lang.javascript.json.JSONFileType;
+//import com.intellij.lang.javascript.json.JSONFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -183,8 +183,8 @@ public class JSRequirePathFinder {
 
             private boolean isJSFile(@NotNull VirtualFile file) {
                 FileType fileType = file.getFileType();
-//                return fileType.equals(JavaScriptFileType.INSTANCE) || fileType.equals(JsonFileType.INSTANCE);
-                return fileType.equals(JavaScriptFileType.INSTANCE) || fileType.equals(JSONFileType.JSON);
+                return fileType.equals(JavaScriptFileType.INSTANCE) || fileType.equals(JsonFileType.INSTANCE);
+//                return fileType.equals(JavaScriptFileType.INSTANCE) || fileType.equals(JSONFileType.JSON);
             }
 
             private boolean isNodeModule(@NotNull VirtualFile file) {
