@@ -1,6 +1,6 @@
 package completion;
 
-// import com.intellij.json.JsonFileType;
+//import com.intellij.json.JsonFileType;
 import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.json.JSONFileType;
 import com.intellij.openapi.fileTypes.FileType;
