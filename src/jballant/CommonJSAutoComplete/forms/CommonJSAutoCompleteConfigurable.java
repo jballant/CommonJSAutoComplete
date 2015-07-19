@@ -1,4 +1,4 @@
-package forms;
+package jballant.CommonJSAutoComplete.forms;
 
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -7,12 +7,9 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
-import config.JSRequireConfig;
+import jballant.CommonJSAutoComplete.config.JSRequireConfig;
 
 
-/**
- * Created by james on 7/20/14.
- */
 public class CommonJSAutoCompleteConfigurable implements Configurable {
     private JTextField mainJSRootDirTextField;
     private JPanel myPanel;

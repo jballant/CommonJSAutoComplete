@@ -1,4 +1,4 @@
-package config;
+package jballant.CommonJSAutoComplete.config;
 
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.project.Project;
@@ -269,7 +269,11 @@ public class JSRequireConfig {
     }
 
     private String formatKey(@NotNull String key) {
-        return key . concat("-") . concat(myProject.getBasePath());
+        String basePath = myProject.getBasePath();
+        if (basePath == null) {
+            basePath = "";
+        }
+        return key . concat("-") . concat(basePath);
     }
 
 }

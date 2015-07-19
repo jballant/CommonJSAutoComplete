@@ -1,4 +1,4 @@
-package completion.util;
+package jballant.CommonJSAutoComplete.completion.util;
 
 import org.apache.tools.ant.util.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +12,7 @@ import java.io.File;
 public class StringUtil {
 
     static final String DASH_STRING = "-";
+    public static final String REQUIRE_FUNC_NAME = "require";
 
     public static boolean isEmptyString (@NotNull String str) {
         return str.length() == 0;

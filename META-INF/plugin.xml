@@ -83,8 +83,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-      <projectConfigurable id="commonJsAutoComplete" instance="forms.CommonJSAutoCompleteConfigurable" displayName="CommonJS AutoComplete"></projectConfigurable>
-      <completion.contributor implementationClass="completion.JSRequireCompletionContributer" language="any" order="FIRST" />
+      <projectConfigurable id="commonJsAutoComplete" instance="jballant.CommonJSAutoComplete.forms.CommonJSAutoCompleteConfigurable" displayName="CommonJS AutoComplete"></projectConfigurable>
+      <completion.contributor implementationClass="jballant.CommonJSAutoComplete.completion.JSRequireCompletionContributer" language="any" order="FIRST" />
   </extensions>
 
   <application-components>

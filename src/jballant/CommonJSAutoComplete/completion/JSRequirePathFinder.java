@@ -1,4 +1,4 @@
-package completion;
+package jballant.CommonJSAutoComplete.completion;
 
 import com.intellij.json.JsonFileType;
 import com.intellij.lang.javascript.JavaScriptFileType;
@@ -8,8 +8,10 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiFile;
-import completion.util.StringUtil;
-import config.JSRequireConfig;
+import jballant.CommonJSAutoComplete.completion.util.LangUtil;
+import jballant.CommonJSAutoComplete.completion.util.StringUtil;
+import jballant.CommonJSAutoComplete.config.JSRequireConfig;
+import org.coffeescript.file.CoffeeScriptFileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -183,7 +185,10 @@ public class JSRequirePathFinder {
 
             private boolean isJSFile(@NotNull VirtualFile file) {
                 FileType fileType = file.getFileType();
-                return fileType.equals(JavaScriptFileType.INSTANCE) || fileType.equals(JsonFileType.INSTANCE);
+                return
+                        LangUtil.isJSFileType(fileType) ||
+                        LangUtil.isCoffeeScriptFileType(fileType) ||
+                        LangUtil.isJSONFileType(fileType);
 //                return fileType.equals(JavaScriptFileType.INSTANCE) || fileType.equals(JSONFileType.JSON);
             }
 
