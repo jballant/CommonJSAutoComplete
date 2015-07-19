@@ -13,6 +13,13 @@
 
     <change-notes><![CDATA[
 
+        <p><strong>0.2.0</strong></p>
+        <ul>
+            <li>Version for IDEA 13 / PHPStorm 7 / WebStorm 7</li>
+            <li>Support coffeescript files</li>
+            <li>Added config option to use double quotes (") instead of the defualt single quote (')</li>
+        </ul>
+
         <p><strong>0.1.5</strong></p>
         <ul>
             <li>Version for IDEA 14 / PHPStorm 8 / WebStorm 8</li>
@@ -74,7 +81,7 @@
     ]]></change-notes>
 
   <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="139"/>
+  <idea-version since-build="131" until-build="139" />
 
   <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->

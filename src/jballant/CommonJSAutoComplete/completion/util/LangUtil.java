@@ -1,6 +1,8 @@
 package jballant.CommonJSAutoComplete.completion.util;
 
-import com.intellij.json.JsonFileType;
+//import com.intellij.json.JsonFileType;
+import com.intellij.lang.javascript.json.JSONFileType;
+
 import com.intellij.lang.Language;
 import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.JavascriptLanguage;
@@ -39,8 +41,8 @@ public class LangUtil {
     }
 
     public static boolean isJSONFileType(@Nullable FileType fileType) {
-        return fileType != null && fileType.equals(JsonFileType.INSTANCE);
-//        return fileType != null && fileType.equals(JSONFileType.JSON);
+//        return fileType != null && fileType.equals(JsonFileType.INSTANCE);
+        return fileType != null && fileType.equals(JSONFileType.JSON);
     }
 
     public static boolean isCoffeeScript (@NotNull Language lang) {

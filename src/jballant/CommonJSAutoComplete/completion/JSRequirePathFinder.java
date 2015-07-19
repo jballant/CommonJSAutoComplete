@@ -1,8 +1,5 @@
 package jballant.CommonJSAutoComplete.completion;
 
-import com.intellij.json.JsonFileType;
-import com.intellij.lang.javascript.JavaScriptFileType;
-//import com.intellij.lang.javascript.json.JSONFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;

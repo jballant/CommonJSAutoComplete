@@ -7,8 +7,6 @@ import com.intellij.lang.javascript.psi.JSVariable;
 import com.intellij.psi.PsiElement;
 import jballant.CommonJSAutoComplete.completion.util.LangUtil;
 import jballant.CommonJSAutoComplete.completion.util.StringUtil;
-import org.coffeescript.lang.psi.impl.CoffeeScriptVariableImpl;
-import org.coffeescript.lang.types.CoffeeScriptVariableElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
