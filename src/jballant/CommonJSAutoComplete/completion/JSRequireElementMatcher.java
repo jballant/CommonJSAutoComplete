@@ -1,12 +1,13 @@
-package jballant.CommonJSAutoComplete.completion;
+package completion;
 
 import com.intellij.lang.Language;
+import com.intellij.lang.ecmascript6.psi.ES6ImportedBinding;
 import com.intellij.lang.javascript.psi.JSReferenceExpression;
 import com.intellij.lang.javascript.psi.JSVarStatement;
 import com.intellij.lang.javascript.psi.JSVariable;
 import com.intellij.psi.PsiElement;
-import jballant.CommonJSAutoComplete.completion.util.LangUtil;
-import jballant.CommonJSAutoComplete.completion.util.StringUtil;
+import completion.util.LangUtil;
+import completion.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +16,7 @@ public class JSRequireElementMatcher {
     private PsiElement psiElement;
     private PsiElement origPsiElement;
     private Language language;
+    private boolean isES6Import = false;
 
     JSRequireElementMatcher(@NotNull PsiElement psiElement, @NotNull PsiElement origPsiElement) {
         this.psiElement = psiElement;
@@ -22,12 +24,20 @@ public class JSRequireElementMatcher {
         this.language = psiElement.getLanguage();
     }
 
+    public boolean isES6Import() {
+        return isES6Import;
+    }
+
     protected @Nullable String getVariableName() {
+        if (origPsiElement.getParent() instanceof ES6ImportedBinding) {
+            this.isES6Import = true;
+            return getImportVarName(origPsiElement);
+        }
         JSVariable var = this.getVariable();
         return var != null ? var.getName() : null;
     }
 
-    protected JSVariable getVariable() {
+    protected @Nullable JSVariable getVariable() {
 
         if (!isJSRefExpression(LangUtil.isCoffeeScript(language) ? origPsiElement :psiElement)) {
             return null;
@@ -50,6 +60,9 @@ public class JSRequireElementMatcher {
         return jsVar;
     }
 
+    protected String getImportVarName (@NotNull PsiElement element) {
+        return element.getText();
+    }
 
     protected static boolean isJSRefExpression (@NotNull PsiElement element) {
         PsiElement context = element.getContext();
@@ -69,13 +82,4 @@ public class JSRequireElementMatcher {
         return text != null && StringUtil.stringIsPotentialSubString(text, JSRequireConstants.REQUIRE_FUNC_NAME);
     }
 
-    public static @Nullable String getJSVarNameForElement(
-            @Nullable PsiElement origPsiElement,
-            @Nullable PsiElement psiElement
-    ) {
-        if (origPsiElement == null || psiElement == null) {
-            return null;
-        }
-        return new JSRequireElementMatcher(psiElement, origPsiElement).getVariableName();
-    }
 }

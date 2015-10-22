@@ -3,65 +3,53 @@ package completion;
 import com.intellij.codeInsight.lookup.AutoCompletionPolicy;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.lang.Language;
 import com.intellij.openapi.project.Project;
 import completion.util.LangUtil;
 import config.JSRequireConfig;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.NotNull;
 
-public class JSRequireLookupElemGenerator {
+public class ES6ImportLookupElemGenerator {
 
     private static final String SEMICOLON_STR = ";";
 
-    private Language elemLanguage;
+    private String varName;
     private String filePath;
     private boolean useDoubleQuotes;
 
-    JSRequireLookupElemGenerator(
-            @NotNull Language elemLanguage,
+    ES6ImportLookupElemGenerator(
+            @NotNull String varName,
             @NotNull Project currentProject,
             @NotNull String filePath
     ) {
-        this.elemLanguage = elemLanguage;
+        this.varName = varName;
         this.filePath = filePath;
         JSRequireConfig config = JSRequireConfig.getInstanceForProject(currentProject);
         this.useDoubleQuotes = config.getShouldUseDoubleQuotes();
     }
 
     @NotNull LookupElement generate() {
-        boolean isCoffee = LangUtil.isCoffeeScript(this.elemLanguage);
-        String completionString = isCoffee ? generateCoffeeRequireString() : generateJSRequireString();
+        String completionString = generateCompletionString();
         LookupElementBuilder builder = LookupElementBuilder
                 .create(completionString)
                 .withBoldness(true)
                 .withPresentableText(completionString)
-                .withCaseSensitivity(true);
-        if (!isCoffee) {
-            builder = builder.withTailText(SEMICOLON_STR);
-        }
+                .withCaseSensitivity(true)
+                .withTailText(SEMICOLON_STR);
         return builder.withAutoCompletionPolicy(AutoCompletionPolicy.GIVE_CHANCE_TO_OVERWRITE);
     }
 
-    private @NotNull String generateJSRequireString() {
+    private @NotNull String generateCompletionString() {
         char quote = this.useDoubleQuotes ? '"' : '\'';
-        String open = "(" + quote;
-        String close = quote + ")";
-        return JSRequireConstants.REQUIRE_FUNC_NAME.concat(open).concat(this.filePath).concat(close);
-    }
-
-    private @NotNull String generateCoffeeRequireString() {
-        char quote = this.useDoubleQuotes ? '"' : '\'';
-        String open = " " + quote;
-        String close = quote + "";
-        return JSRequireConstants.REQUIRE_FUNC_NAME.concat(open).concat(this.filePath).concat(close);
+        return this.varName + " from " + quote + (this.filePath) + quote;
     }
 
     public static @NotNull LookupElement generateLookupElement(
-            @NotNull Language elemLanguage,
+            @NotNull String varName,
             @NotNull Project currentProject,
             @NotNull String filePath
     ) {
-        JSRequireLookupElemGenerator generator = new JSRequireLookupElemGenerator(elemLanguage, currentProject, filePath);
+        ES6ImportLookupElemGenerator generator = new ES6ImportLookupElemGenerator(varName, currentProject, filePath);
         return generator.generate();
     }
 

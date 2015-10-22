@@ -1,4 +1,4 @@
-package jballant.CommonJSAutoComplete.forms;
+package forms;
 
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
-import jballant.CommonJSAutoComplete.config.JSRequireConfig;
+import config.JSRequireConfig;
 
 
 public class CommonJSAutoCompleteConfigurable implements Configurable {

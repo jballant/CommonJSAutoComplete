@@ -1,4 +1,4 @@
-package jballant.CommonJSAutoComplete.completion;
+package completion;
 
 public class JSRequireConstants {
 

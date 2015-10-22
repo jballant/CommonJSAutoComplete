@@ -1,4 +1,4 @@
-package jballant.CommonJSAutoComplete.completion.util;
+package completion.util;
 
 import com.intellij.json.JsonFileType;
 //import com.intellij.lang.javascript.json.JSONFileType;

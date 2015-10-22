@@ -13,6 +13,11 @@
 
     <change-notes><![CDATA[
 
+        <p><strong>0.2.2</strong></p>
+        <ul>
+            <li>Basic support for es6 import statement</li>
+        </ul>
+
         <p><strong>0.2.1</strong></p>
         <ul>
             <li>Version for IDEA 14 / PHPStorm 8 / WebStorm 8</li>
@@ -97,8 +102,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
-      <projectConfigurable id="commonJsAutoComplete" instance="jballant.CommonJSAutoComplete.forms.CommonJSAutoCompleteConfigurable" displayName="CommonJS AutoComplete"></projectConfigurable>
-      <completion.contributor implementationClass="jballant.CommonJSAutoComplete.completion.JSRequireCompletionContributer" language="any" order="FIRST" />
+      <projectConfigurable id="commonJsAutoComplete" instance="forms.CommonJSAutoCompleteConfigurable" displayName="CommonJS AutoComplete"></projectConfigurable>
+      <completion.contributor implementationClass="completion.JSRequireCompletionContributer" language="any" order="FIRST" />
   </extensions>
 
   <application-components>

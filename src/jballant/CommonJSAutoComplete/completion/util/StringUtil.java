@@ -1,4 +1,4 @@
-package jballant.CommonJSAutoComplete.completion.util;
+package completion.util;
 
 import org.apache.tools.ant.util.FileUtils;
 import org.jetbrains.annotations.NotNull;
