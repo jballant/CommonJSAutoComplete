@@ -1,10 +1,12 @@
 package completion;
 
+import com.intellij.lang.javascript.dialects.TypeScriptLanguageDialect;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileVisitor;
 import com.intellij.psi.PsiFile;
+import com.sun.tools.example.debug.gui.TypeScript;
 import completion.util.LangUtil;
 import completion.util.StringUtil;
 import config.JSRequireConfig;
@@ -44,7 +46,6 @@ public class JSRequirePathFinder {
         rootJSDirs = new VirtualFile[2];
         rootJSDirs[0] = mainJsDir;
         rootJSDirs[1] = nodeModulesDir;
-
     }
 
     public @NotNull JSRequirePathFinder setIgnoreCapitalization(boolean ignoreCapitalization) {
@@ -184,7 +185,8 @@ public class JSRequirePathFinder {
                 return
                         LangUtil.isJSFileType(fileType) ||
                         LangUtil.isCoffeeScriptFileType(fileType) ||
-                        LangUtil.isJSONFileType(fileType);
+                        LangUtil.isJSONFileType(fileType) ||
+                        LangUtil.isTypeScriptFileType(fileType);
             }
 
             private boolean isNodeModule(@NotNull VirtualFile file) {

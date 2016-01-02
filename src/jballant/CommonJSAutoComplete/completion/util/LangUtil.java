@@ -6,6 +6,7 @@ import com.intellij.json.JsonFileType;
 import com.intellij.lang.Language;
 import com.intellij.lang.javascript.JavaScriptFileType;
 import com.intellij.lang.javascript.JavascriptLanguage;
+import com.intellij.lang.javascript.TypeScriptFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import org.coffeescript.CoffeeScriptLanguage;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +35,10 @@ public class LangUtil {
 
     public static boolean isJSFileType(@Nullable FileType fileType) {
         return fileType != null && fileType.equals(JavaScriptFileType.INSTANCE);
+    }
+
+    public static boolean isTypeScriptFileType(@Nullable FileType fileType) {
+        return fileType != null && fileType.equals(TypeScriptFileType.INSTANCE);
     }
 
     public static boolean isCoffeeScriptFileType(@Nullable FileType fileType) {
