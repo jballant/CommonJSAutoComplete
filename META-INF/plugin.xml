@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>jballant.CommonJSAutoComplete</id>
   <name>CommonJS AutoComplete</name>
-  <version>0.2.1</version>
+  <version>0.2.2</version>
   <vendor url="https://github.com/jballant">James Ballantine</vendor>
 
   <description><![CDATA[
